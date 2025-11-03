@@ -1,64 +1,41 @@
-// File: SpringDIExample.java
-package com.example.springdemo;
+1.Create HTML Login Form (login.html):--------------------
 
-import org.springframework.context.annotation.*;
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <h2>User Login</h2>
+    <form action="LoginServlet" method="post">
+        Username: <input type="text" name="username" required><br><br>
+        Password: <input type="password" name="password" required><br><br>
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>
+--------------------------------------------------------------
+2.Create Login Servlet (LoginServlet.java):-------------------
 
-// ---------------- Configuration Class ----------------
-@Configuration
-class AppConfig {
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
-    @Bean
-    public Course course() {
-        return new Course("Spring Framework");
-    }
+public class LoginServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
 
-    @Bean
-    public Student student() {
-        return new Student(course());
-    }
-}
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
 
-// ---------------- Dependency Class ----------------
-class Course {
-    private String courseName;
-
-    public Course(String courseName) {
-        this.courseName = courseName;
-    }
-
-    public void displayCourse() {
-        System.out.println("Enrolled in course: " + courseName);
-    }
-}
-
-// ---------------- Dependent Class ----------------
-class Student {
-    private Course course;  // Dependency
-
-    public Student(Course course) {
-        this.course = course;
-    }
-
-    public void displayInfo() {
-        System.out.println("Student Details:");
-        course.displayCourse();
-    }
-}
-
-// ---------------- Main Class ----------------
-public class SpringDIExample {
-    public static void main(String[] args) {
-        // Initialize Spring context using Java-based configuration
-        AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext(AppConfig.class);
-
-        // Get the Student bean
-        Student student = context.getBean(Student.class);
-
-        // Use the bean
-        student.displayInfo();
-
-        // Close the context
-        context.close();
+        // Simple validation (hardcoded example)
+        if("admin".equals(username) && "admin123".equals(password)) {
+            out.println("<h2>Welcome, " + username + "!</h2>");
+        } else {
+            out.println("<h2>Invalid credentials! Please try again.</h2>");
+            out.println("<a href='login.html'>Back to Login</a>");
+        }
     }
 }
