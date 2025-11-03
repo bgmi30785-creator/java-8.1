@@ -1,0 +1,64 @@
+// File: SpringDIExample.java
+package com.example.springdemo;
+
+import org.springframework.context.annotation.*;
+
+// ---------------- Configuration Class ----------------
+@Configuration
+class AppConfig {
+
+    @Bean
+    public Course course() {
+        return new Course("Spring Framework");
+    }
+
+    @Bean
+    public Student student() {
+        return new Student(course());
+    }
+}
+
+// ---------------- Dependency Class ----------------
+class Course {
+    private String courseName;
+
+    public Course(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public void displayCourse() {
+        System.out.println("Enrolled in course: " + courseName);
+    }
+}
+
+// ---------------- Dependent Class ----------------
+class Student {
+    private Course course;  // Dependency
+
+    public Student(Course course) {
+        this.course = course;
+    }
+
+    public void displayInfo() {
+        System.out.println("Student Details:");
+        course.displayCourse();
+    }
+}
+
+// ---------------- Main Class ----------------
+public class SpringDIExample {
+    public static void main(String[] args) {
+        // Initialize Spring context using Java-based configuration
+        AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(AppConfig.class);
+
+        // Get the Student bean
+        Student student = context.getBean(Student.class);
+
+        // Use the bean
+        student.displayInfo();
+
+        // Close the context
+        context.close();
+    }
+}
